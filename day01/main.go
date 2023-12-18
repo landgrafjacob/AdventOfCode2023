@@ -1,11 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
+	"bufio"
+	"flag"
+
+	"github.com/landgrafjacob/AdventOfCode2023/utils"
 )
 
 var numMap = map[string]string{
@@ -20,27 +22,39 @@ var numMap = map[string]string{
 	"nine":  "9",
 }
 
+var part int
+
 func main() {
-	f, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Println("Error opening input file")
+	scanner := utils.ReadFile("input.txt")
+	var part int
+	flag.IntVar(&part, "part", 1, "part 1 or 2")
+	flag.Parse()
+
+	if part == 1 {
+		fmt.Printf("Calibration value Part 1: %d\n", part01(scanner))
+	} else if part == 2 {
+		fmt.Printf("Calibration value Part 1: %d\n", part02(scanner))
 	}
+}
 
-	scanner := bufio.NewScanner(f)
-
-	answer1 := 0
-	answer2 := 0
-
+func part01(scanner *bufio.Scanner) int {
+	answer := 0
 	for scanner.Scan() {
-		lineValuePart1 := getCalValue(scanner.Text(), false)
-		lineValuePart2 := getCalValue(scanner.Text(), true)
-		answer1 = answer1 + lineValuePart1
-		answer2 = answer2 + lineValuePart2
-		// fmt.Printf("%s: %d\n", scanner.Text(), lineValue)
+		lineValue := getCalValue(scanner.Text(), false)
+		answer += lineValue
 	}
 
-	fmt.Printf("Calibration value Part 1: %d\n", answer1)
-	fmt.Printf("Calibration value Part 2: %d\n", answer2)
+	return answer
+}
+
+func part02(scanner *bufio.Scanner) int {
+	answer := 0
+	for scanner.Scan() {
+		lineValue := getCalValue(scanner.Text(), true)
+		answer += lineValue
+	}
+
+	return answer
 }
 
 func getFirstNum(line string, includeSpelled bool) string {
